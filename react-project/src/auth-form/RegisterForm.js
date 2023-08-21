@@ -1,34 +1,42 @@
 import React from "react";
 import { useState } from "react";
 import { Button, Grid, InputLabel, OutlinedInput, Stack } from "@mui/material";
-import { useForm } from 'react-hook-form';
 import { SnackbarProvider, useSnackbar } from "notistack";
 
 const RegisterForm = () => {
-  const [showPassword, setShowPassword] = useState(false); //eslint-disable-line
-  const { register, handleSubmit, setValue, isSubmitting } = useForm();
   const { enqueueSnackbar } = useSnackbar(); 
+  const [records, setRecords] = useState([]);
+  const [userSignup , setUserSignup] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    contact_number: '',
+    password: ''
+  })
+
+  const handleInput = (e) => {
+const name = e.target.name;
+const value = e.target.value;
+console.log(name, value);
+
+setUserSignup({ ...userSignup, [name]: value});
+  }
 
 
-  const onSubmit = async (values) => {
-    try {
-      await register(values);
-    } catch (err) {
-      enqueueSnackbar(err.response.data.message, { variant: 'error' });
-      if (err.response.data.data) {
-        const errorFields = err.response.data.data;
-        Object.keys(errorFields).forEach((fieldName) => {
-          setValue(fieldName, '', { shouldValidate: true });
-        });
-      }
-    }
-  };
+const handleSubmit  = (e) => {
+  e.preventDefault();
+
+  const newRecord = {...userSignup, id: new Date().getTime().toString() }
+
+setRecords([...records, newRecord]);
+console.log();
+}
 
   
   return (
     <>
      <SnackbarProvider maxSnack={3}> 
-      <form noValidate onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Stack spacing={1}>
@@ -38,16 +46,11 @@ const RegisterForm = () => {
               <OutlinedInput
                 id="first_name"
                 name="first_name"
-                {...register("first_name", { required: "First Name is required" })}
-
+                type="text"
+                value={userSignup.first_name}
+                onChange={handleInput}
                 fullWidth
-                // error={Boolean(errors.first_name)}
               />
-              {/* {errors.first_name && (
-               error id="helper-text-firstname-signup">
-                  {errors.first_name.message}
-                >
-              )} */}
             </Stack>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -58,37 +61,27 @@ const RegisterForm = () => {
               <OutlinedInput
                 id="last_name"
                 name="last_name"
-                {...register("last_name", { required: "Last Name is required" })}
-
+        type="text"
+        value={userSignup.last_name}
+        onChange={handleInput}
                 fullWidth
-                // error={Boolean(errors.last_name)}
               />
-              {/* {errors.last_name && (
-               error id="helper-text-lastname-signup">
-                  {errors.last_name.message}
-                >
-              )} */}
             </Stack>
           </Grid>
           <Grid item xs={12}>
             <Stack spacing={1}>
-              <InputLabel htmlFor="email-signup">
+              <InputLabel htmlFor="email">
                 Email Address<span style={{ color: "red" }}>*</span>
               </InputLabel>
               <OutlinedInput
-                id="email-login"
-                type="email"
+                id="email"
+                type="text"
                 name="email"
-                autoComplete="off"
-                {...register("email", { required: "Email is required" })}
                 fullWidth
-                // error={Boolean(errors.email)}
+                autoComplete="off"
+                value={userSignup.email}
+                onChange={handleInput}
               />
-              {/* {errors.email && (
-               error id="helper-text-email-signup">
-                  {errors.email}
-                >
-              )} */}
             </Stack>
           </Grid>
           <Grid item xs={12}>
@@ -99,15 +92,12 @@ const RegisterForm = () => {
               <OutlinedInput
                 id="contact_number"
                 name="contact_number"
-                {...register("contact_number", { required: "Contact Number is required" })}
+                // type="number"
+                autoComplete="off"
+                value={userSignup.contact_number}
+                onChange={handleInput}
                 fullWidth
-                // error={Boolean(errors.contact_number)}
               />
-              {/* {errors.contact_number && (
-               error id="helper-text-contact-number-signup">
-                  {errors.contact_number.message}
-                </>
-              )} */}
             </Stack>
           </Grid>
           <Grid item xs={12}>
@@ -117,17 +107,12 @@ const RegisterForm = () => {
               </InputLabel>
               <OutlinedInput
                 fullWidth
-                // error={Boolean(errors.password)}
                 id="password"
-                type={showPassword ? "text" : "password"}
+                type="text"
                 name="password"
-                {...register("password", { required: "Password is required" })}
+                value={userSignup.password}
+                onChange={handleInput}
               />
-              {/* {errors.password && (
-                <FormHelperText error id="helper-text-password-signup">
-                  {errors.password.message}
-                </FormHelperText>
-              )} */}
             </Stack>
           </Grid>
           <Grid item xs={12}>
@@ -136,6 +121,7 @@ const RegisterForm = () => {
                 fullWidth
                 size="large"
                 type="submit"
+                onChange={}
                 variant="contained"
                 color="primary"
               >

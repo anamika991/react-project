@@ -11,7 +11,7 @@ const Login = () => {
             <Typography variant="h3">Login</Typography>
             <Typography
               component={Link}
-              to={'auth-form/RegisterForm'}
+              to={'/'}
               variant="body1"
               sx={{ textDecoration: 'none' }}
               color="#753CEF"
